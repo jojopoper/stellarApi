@@ -58,9 +58,9 @@ func (ths *AccountInfo) GetInfo(wt *sync.WaitGroup, p *RequestParameters) error 
 
 func (ths *AccountInfo) getAddr(p *RequestParameters) string {
 	if p.UseTestNetwork {
-		return fmt.Sprintf("%s/accounts/%s", StellarHorizonTestURL, ths.ID)
+		return fmt.Sprintf("%s/accounts/%s", HorizonTest, ths.ID)
 	}
-	return fmt.Sprintf("%s/accounts/%s", StellarHorizonLiveURL, ths.ID)
+	return fmt.Sprintf("%s/accounts/%s", HorizonLive, ths.ID)
 }
 
 func (ths *AccountInfo) decodeFunc(body []byte) (interface{}, error) {

@@ -51,9 +51,9 @@ func (ths *TransactionRequest) GetTransInfo(wt *sync.WaitGroup, q *QueryParamete
 
 func (ths *TransactionRequest) getAddr(q *QueryParameters) (ret string) {
 	if q.UseTestNetwork {
-		return fmt.Sprintf("%s/transactions/%s", StellarHorizonTestURL, ths.reqHash)
+		return fmt.Sprintf("%s/transactions/%s", HorizonTest, ths.reqHash)
 	}
-	return fmt.Sprintf("%s/transactions/%s", StellarHorizonLiveURL, ths.reqHash)
+	return fmt.Sprintf("%s/transactions/%s", HorizonLive, ths.reqHash)
 }
 
 func (ths *TransactionRequest) decodeFunc(body []byte) (interface{}, error) {

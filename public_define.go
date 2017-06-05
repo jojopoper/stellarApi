@@ -1,18 +1,19 @@
 package stellarApi
 
-import (
-	"github.com/jojopoper/rhttp"
-	_b "github.com/stellar/go/build"
-)
+import _b "github.com/stellar/go/build"
 
 // OrderTypeDef 查询时使用正序或倒序的定义
 type OrderTypeDef string
+
+// HorizonServBand horizon服务器选择定义
+type HorizonServBand int
 
 const (
 	BaseTxFee = 100
 
 	StellarHorizonTestURL = "https://horizon-testnet.stellar.org:443"
 	StellarHorizonLiveURL = "https://horizon.stellar.org:443"
+	StellarHorizonFlyURL  = "https://api.chinastellar.com:443"
 
 	OrigHttp       = 1
 	ClientHttp     = 2
@@ -21,14 +22,11 @@ const (
 
 	AscOrderType  OrderTypeDef = "asc"
 	DescOrderType OrderTypeDef = "desc"
-)
 
-// RequestParameters 请求参数定义
-type RequestParameters struct {
-	rhttp.CRequestParam
-	HttpType       int
-	UseTestNetwork bool
-}
+	UnknownHorizon HorizonServBand = -1
+	OfficalHorizon HorizonServBand = 0
+	FlyHorizon     HorizonServBand = 1
+)
 
 // QueryParameters 查询参数定义
 type QueryParameters struct {

@@ -35,12 +35,12 @@ func (ths *PostTransFrame) RegOperation(op IOperation) {
 }
 
 // GetSignature 获取签名
-func (ths *PostTransFrame) GetSignature(key string) (string, error) {
+func (ths *PostTransFrame) GetSignature(keys ...string) (string, error) {
 	if ths.Ops == nil {
 		return "", fmt.Errorf("There is not any operations in this transaction")
 	}
-	if len(key) != 56 {
-		return "", fmt.Errorf("The length of signature key is must be 56")
+	if keys == nil || len(keys) == 0 {
+		return "", fmt.Errorf("The length of signature keys is must be set")
 	}
 
 	tx := &_b.TransactionBuilder{}
@@ -55,7 +55,7 @@ func (ths *PostTransFrame) GetSignature(key string) (string, error) {
 	if tx.Err != nil {
 		return "", tx.Err
 	}
-	ret := tx.Sign(key)
+	ret := tx.Sign(keys...)
 	base64, err := ret.Base64()
 	return base64, err
 }
@@ -87,9 +87,9 @@ func (ths *PostTransFrame) ExecSignature(wt *sync.WaitGroup, p *RequestParameter
 
 func (ths *PostTransFrame) getAddr(p *RequestParameters) string {
 	if p.UseTestNetwork {
-		return fmt.Sprintf("%s/transactions", StellarHorizonTestURL)
+		return fmt.Sprintf("%s/transactions", HorizonTest)
 	}
-	return fmt.Sprintf("%s/transactions", StellarHorizonLiveURL)
+	return fmt.Sprintf("%s/transactions", HorizonLive)
 }
 
 func (ths *PostTransFrame) decodeFunc(b []byte) (interface{}, error) {

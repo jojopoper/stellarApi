@@ -68,9 +68,9 @@ func (ths *AccountTransactions) GetAccTransUnit(index int) *AccountTransUnit {
 
 func (ths *AccountTransactions) getAddr(q *QueryParameters) (ret string) {
 	if q.UseTestNetwork {
-		ret = fmt.Sprintf("%s/accounts/%s/transactions", StellarHorizonTestURL, ths.accid)
+		ret = fmt.Sprintf("%s/accounts/%s/transactions", HorizonTest, ths.accid)
 	} else {
-		ret = fmt.Sprintf("%s/accounts/%s/transactions", StellarHorizonLiveURL, ths.accid)
+		ret = fmt.Sprintf("%s/accounts/%s/transactions", HorizonLive, ths.accid)
 	}
 	return fmt.Sprintf("%s?limit=%d&order=%s&cursor=%s", ret, q.Size, q.OrderType, q.Cursor)
 }
