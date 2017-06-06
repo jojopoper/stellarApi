@@ -1,15 +1,6 @@
 package stellarApi
 
-import (
-	"reflect"
-
-	_b "github.com/stellar/go/build"
-)
-
-// ISubOperations 子操作
-type ISubOperations interface {
-	AddSubOption(so *_b.SetOptionsBuilder)
-}
+import _b "github.com/stellar/go/build"
 
 // SetOptionsOp 设置
 type SetOptionsOp struct {
@@ -17,65 +8,38 @@ type SetOptionsOp struct {
 	SubOperations []ISubOperations
 }
 
-// InflationDestOpSub 通胀
-type InflationDestOpSub struct {
-	InflationDestination string
-}
-
-// AddSubOption 添加到Operation中
-func (ths *InflationDestOpSub) AddSubOption(so *_b.SetOptionsBuilder) {
-	if len(ths.InflationDestination) > 0 {
-		so.Mutate(_b.InflationDest(ths.InflationDestination))
-	}
-}
-
-// HomeDomainOpSub 通胀
-type HomeDomainOpSub struct {
-	HomeDomain string
-}
-
-// AddSubOption 添加到Operation中
-func (ths *HomeDomainOpSub) AddSubOption(so *_b.SetOptionsBuilder) {
-	if len(ths.HomeDomain) > 0 {
-		so.Mutate(_b.HomeDomain(ths.HomeDomain))
-	}
-}
-
 // NewSetOptionsOp 创建SetOptionsOp实例
-// v 的顺序 Inflation Destination(string);
-//			Home Domain(string);
-//			Master Weight(int);
-//			Low Threshold(int);
-//			Medium Threshold(int);
-//			High Threshold(int);
-// 			Set Flags(SetFlags);
-// 			Clear Flags(ClearFlags);
-//			Sign Type(SignerType);
-func NewSetOptionsOp(src string, v ...interface{}) IOperation {
-	ret := &SetOptionsOp{
+func NewSetOptionsOp(src string, v ...ISubOperations) IOperation {
+	return &SetOptionsOp{
 		SourceAccount: src,
-		SubOperations: make([]ISubOperations, 0),
+		SubOperations: v,
 	}
-	if len(v) >= 1 && reflect.TypeOf(v[0]).Kind() == reflect.String {
-		ret.SubOperations = append(ret.SubOperations,
-			&InflationDestOpSub{
-				InflationDestination: v[0].(string),
-			})
+}
+
+// AddSubOp 添加子命令操作
+func (ths *SetOptionsOp) AddSubOp(src string, subOp ISubOperations) IOperation {
+	if len(src) > 0 {
+		ths.SourceAccount = src
 	}
-	if len(v) >= 2 && reflect.TypeOf(v[1]).Kind() == reflect.String {
-		ret.SubOperations = append(ret.SubOperations,
-			&HomeDomainOpSub{
-				HomeDomain: v[1].(string),
-			})
+
+	if ths.SubOperations == nil {
+		ths.SubOperations = make([]ISubOperations, 0)
 	}
-	return ret
+	ths.SubOperations = append(ths.SubOperations, subOp)
+	return ths
 }
 
 // AddOperation 添加操作
 func (ths *SetOptionsOp) AddOperation(tx *_b.TransactionBuilder) {
+	if ths.SubOperations == nil {
+		return
+	}
 	so := &_b.SetOptionsBuilder{}
 	if len(ths.SourceAccount) > 0 {
 		so.Mutate(_b.SourceAccount{AddressOrSeed: ths.SourceAccount})
+	}
+	for _, subItm := range ths.SubOperations {
+		subItm.AddSubOption(so)
 	}
 	tx.Mutate(so)
 }
