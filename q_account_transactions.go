@@ -72,7 +72,10 @@ func (ths *AccountTransactions) getAddr(q *QueryParameters) (ret string) {
 	} else {
 		ret = fmt.Sprintf("%s/accounts/%s/transactions", HorizonLive, ths.accid)
 	}
-	return fmt.Sprintf("%s?limit=%d&order=%s&cursor=%s", ret, q.Size, q.OrderType, q.Cursor)
+	if q.Cursor != "0" {
+		return fmt.Sprintf("%s?limit=%d&order=%s&cursor=%s", ret, q.Size, q.OrderType, q.Cursor)
+	}
+	return fmt.Sprintf("%s?limit=%d&order=%s", ret, q.Size, q.OrderType)
 }
 
 func (ths *AccountTransactions) decodeFunc(body []byte) (interface{}, error) {

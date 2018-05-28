@@ -77,12 +77,12 @@ func (ths *AccountInfo) GetNextSequence() uint64 {
 	return ths.sequence
 }
 
-// GetCurrentSequence get currnt sequence
+// GetCurrentSequence get current sequence
 func (ths *AccountInfo) GetCurrentSequence() uint64 {
 	return ths.sequence
 }
 
-// ResetSequence reset currnt sequence
+// ResetSequence reset current sequence
 func (ths *AccountInfo) ResetSequence() {
 	ths.sequence--
 }

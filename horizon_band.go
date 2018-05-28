@@ -4,7 +4,7 @@ package stellarApi
 var HorizonTest = StellarHorizonTestURL
 
 // HorizonLive Horizon 生产服务器地址
-var HorizonLive = StellarHorizonFlyURL
+var HorizonLive = StellarHorizonLiveURL
 
 // SetHorizonBand 设置Horizon服务器绑定
 // 当前只影响Live，对Test只使用官方服务器

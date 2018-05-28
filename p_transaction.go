@@ -34,6 +34,16 @@ func (ths *PostTransFrame) RegOperation(op IOperation) {
 	}
 }
 
+// RegOperations 注册多个Operation接口实例
+func (ths *PostTransFrame) RegOperations(ops ...IOperation) {
+	if ths.Ops == nil {
+		ths.Ops = make([]IOperation, 0)
+	}
+	if ops != nil {
+		ths.Ops = append(ths.Ops, ops...)
+	}
+}
+
 // GetSignature 获取签名
 func (ths *PostTransFrame) GetSignature(keys ...string) (string, error) {
 	if ths.Ops == nil {
@@ -52,12 +62,14 @@ func (ths *PostTransFrame) GetSignature(keys ...string) (string, error) {
 	ths.addNetwork(tx)
 	ths.AddMemo(tx)
 	tx.TX.Fee = _x.Uint32(BaseTxFee * len(ths.Ops))
-	if tx.Err != nil {
-		return "", tx.Err
+	// if tx.Err != nil {
+	// 	return "", tx.Err
+	// }
+	ret, err := tx.Sign(keys...)
+	if err != nil {
+		return "", err
 	}
-	ret := tx.Sign(keys...)
-	base64, err := ret.Base64()
-	return base64, err
+	return ret.Base64()
 }
 
 func (ths *PostTransFrame) addNetwork(tx *_b.TransactionBuilder) {
@@ -79,10 +91,7 @@ func (ths *PostTransFrame) ExecSignature(wt *sync.WaitGroup, p *RequestParameter
 	}
 	ths.SetDecodeFunc(ths.decodeFunc)
 	_, err := ths.PostResponse(p)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (ths *PostTransFrame) getAddr(p *RequestParameters) string {
